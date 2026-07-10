@@ -2,6 +2,7 @@
   "name": "memory-task-manager",
   "version": "1.0.0",
   "description": "Gestor de tareas profesional",
+  "type": "module",
   "main": "api/server.js",
   "scripts": {
     "start": "node api/server.js",
