@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="./assets/css/style.css" type="text/css"  >
+<title>Task Manager - In-Memory CRUD</title>
+
+</head>
+<body>
+
+    <h1>📝 Task Manager - In-Memory CRUD</h1>
+    
+    <form id="taskForm">
+        <h2 id="formTitle">New Task</h2>
+        <input type="hidden" id="taskId">
+        
+        <div class="form-group">
+            <label for="titulo">Task Title:</label>
+            <input type="text" id="titulo" required placeholder="Ej. Estudiar Express.js">
+        </div>
+        
+        <div class="form-group">
+            <label for="descripcion">Descriptión:</label>
+            <textarea id="descripcion" rows="3" placeholder="Ej. Repasar los verbos HTTP y promesas..."></textarea>
+        </div>
+        
+        <button type="submit" class="btn-submit" id="btnGuardar">Save Task</button>
+        <button type="button" class="btn-cancel" id="btnCancelar" style="display:none;">Cancel Edit</button>
+    </form>
+
+    <h2>📋 To-Do List</h2>
+    <div id="listaTareas">   </div>
+    <!-- <script type="module" src="./assets/js/main.js"></script> Proyecto Original almacenando datos en memoria-->
+    <!-- <script type="module" src="./assets/js/main-json.js"></script> Proyecto modificado almacenamiento de datos con archivo JSON -->
+    <!--<script type="module" src="./assets/js/main-rest.js"></script>  Proyecto modificado almacenamiento de datos en B de D Poastgres instalado Window del PC personal -->
+    <!--<script type="module" src="./assets/js/main-docker.js"></script> Proyecto modificado almacenamiento de datos en B de D Poastgres instalado dentro contenedor Docker -->
+    <script type="module" src="./assets/js/main-cloud.js"></script> <!--Proyecto modificado almacenamiento de datos en B de D Poastgres en Cloud SQL -->
+</body>
+</html>

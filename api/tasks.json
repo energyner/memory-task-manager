@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1782852803149,
+        "titulo": "Test 1",
+        "descripcion": "Ejecutando el proyecto modificado memory-task-manager almacenando datos en un archivo físico JSON"
+    },
+    {
+        "id": 1782852840071,
+        "titulo": "Test 2",
+        "descripcion": "Duplicando el registro con una nueva tarea para comprobar como se modifica el archivo tasks.json"
+    },
+    {
+        "id": 1782994023602,
+        "titulo": "Test 3",
+        "descripcion": "Conexion de la API con Postgres instalada en window"
+    }
+]
