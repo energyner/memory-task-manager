@@ -49,3 +49,36 @@
             align-items: center;
         }
 
+/*----------------------------------------------------------
+    Status Message
+    Mensajes informativos del sistema
+----------------------------------------------------------*/
+.status-message{
+    width:100%;
+    margin:20px 0;
+    padding:15px;
+    text-align:center;
+    font-size:1rem;
+    font-weight:600;
+    color:#555;
+    background:#f8f9fa;
+    border:1px solid #dcdcdc;
+    border-radius:8px;
+    box-shadow:0 2px 4px rgba(0,0,0,.08);
+    animation:fadeIn .4s ease-in-out;
+}
+
+/*----------------------------------------------------------
+    Animación de entrada
+----------------------------------------------------------*/
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(-8px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}

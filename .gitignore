@@ -57,4 +57,15 @@ build/
 
 *.tmp
 *.temp
-*.txt
+
+# ===============================
+# Untracked files
+# Local Development Files Only
+# ===============================
+
+# Local JSON database used during testing
+api/tasks.json
+# Local PostgreSQL connection module
+config/db-local.js
+# Database connection testing utility
+public/assets/js/test-connection-db.js

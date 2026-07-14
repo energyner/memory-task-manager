@@ -1,7 +1,7 @@
 //test-connection-db.js
 
 import express from 'express';
-import { pool } from '../../db.js'; // tu conexión con pg
+import { pool } from '../../db.js'; // conexión con pg
 
 const app = express();
 

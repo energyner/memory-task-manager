@@ -1,12 +1,7 @@
 # Memory Task Manager
-# Idioma SP e EN
-## Descripción
+# Languages:  English & Spanish
 
-
-
-Languages: Spanish and English
-
-##================
+##================English=====
 
 Description
 Memory Task Manager is a modern web application developed using Node.js, Express, and PostgreSQL. Designed as a practical project for Book 6 (Module 2), it guides students through the end-to-end process of building and deploying a scalable web application on the Vercel platform with a Neon PostgreSQL database.
@@ -27,18 +22,19 @@ Configure vercel.json for serverless deployment.
 Manage professional deployment workflows (CI/CD) with GitHub and Vercel.
 
 ProjectArchitecture
-plaintext
+
 memory-task-manager/
 ├── api/
-│ └── server.js # Serverless entry point
+│   └── server.js        # Serverless entry point
 ├── config/
-│ └── db.js # Neon PostgreSQL connection
-├── public/ # Frontend assets
-├── .env # Local configuration
+│   └── db.js            # Neon PostgreSQL connection
+├── public/              # Frontend assets
+├── .env                 # Local configuration
 ├── .gitignore
 ├── package.json
-├── vercel.json # Deployment configuration
+├── vercel.json          # Deployment configuration
 └── README.md
+
 Technologies Used
 Node.js (ES Modules)
 
@@ -99,96 +95,95 @@ Author
 René F. Ruano Dominguez
 
 
-##=================
-Description
-Memory Task Manager is a modern web application developed using Node.js, Express, and PostgreSQL. Designed as a practical project for Book 6 (Module 2), it guides students through the end-to-end process of building and deploying a scalable web application on the Vercel platform with a Neon PostgreSQL database.
+##================Spanish=====
 
-This project focuses on modern development workflows, clean architecture, and cloud-native deployment efficiency.
+Descripción
+Memory Task Manager es una aplicación web moderna desarrollada con Node.js, Express y PostgreSQL. Diseñada como un proyecto práctico para el Libro 6 (Módulo 2), guía a los estudiantes a través del proceso completo de creación y despliegue de una aplicación web escalable en la plataforma Vercel, utilizando una base de datos PostgreSQL de Neon.
 
-Project Objectives
-Upon completing this project, the student will learn how to:
+Este proyecto se centra en flujos de trabajo de desarrollo modernos, arquitectura limpia y eficiencia en el despliegue nativo para la nube.
 
-Develop a REST API using Node.js, Express, and ES Modules.
+Objetivos del proyecto
+Al finalizar este proyecto, el estudiante aprenderá a:
 
-Integrate and manage a serverless PostgreSQL database using Neon.
+Desarrollar una API REST utilizando Node.js, Express y ES Modules.
 
-Implement environment variables for configuration.
+Integrar y gestionar una base de datos PostgreSQL *serverless* (sin servidor) utilizando Neon.
 
-Configure vercel.json for serverless deployment.
+Implementar variables de entorno para la configuración.
 
-Manage professional deployment workflows (CI/CD) with GitHub and Vercel.
+Configurar `vercel.json` para el despliegue *serverless*.
 
-Project Architecture
-Plaintext
+Gestionar flujos de trabajo de despliegue profesional (CI/CD) con GitHub y Vercel.
+
+Arquitectura del proyecto
+
 memory-task-manager/
 ├── api/
-│   └── server.js        # Serverless entry point
+│   └── server.js        # Punto de entrada serverless
 ├── config/
-│   └── db.js            # Neon PostgreSQL connection
-├── public/              # Frontend assets
-├── .env                 # Local configuration
+│   └── db.js            # Conexión a Neon PostgreSQL
+├── public/              # Recursos del frontend
+├── .env                 # Configuración local
 ├── .gitignore
 ├── package.json
-├── vercel.json          # Deployment configuration
+├── vercel.json          # Configuración de despliegue
 └── README.md
-Technologies Used
+
+Tecnologías utilizadas
 Node.js (ES Modules)
 
 Express.js
 
 PostgreSQL (Neon)
 
-Vercel (Deployment)
+Vercel (Despliegue)
 
-GitHub (Version Control)
+GitHub (Control de versiones)
 
-Prerequisites
-Node.js (LTS version)
+Requisitos previos
+Node.js (versión LTS)
 
 npm
 
-A GitHub account
+Cuenta de GitHub
 
-A Vercel account
+Cuenta de Vercel
 
-A Neon PostgreSQL account
+Cuenta de Neon PostgreSQL
 
-Initial Setup
-Clone the repository:
-git clone <repository-url>
+Configuración inicial
+Clonar el repositorio:
+git clone <url-del-repositorio>
 
-Install dependencies:
+Instalar dependencias:
 
 Bash
 npm install
-Configuration
-Local Environment
-Copy the .env.example file to .env and fill in your local database credentials:
+Configuración
+Entorno local
+Copiar el archivo `.env.example` a `.env` y completar las credenciales de la base de datos local:
 
 Fragmento de código
 DATABASE_URL=postgres://user:password@host:port/dbname
 PORT=3000
-Important: The .env file must never be committed to Git. Use Vercel's dashboard to add these variables for production.
+Importante: El archivo `.env` nunca debe subirse a Git. Utiliza el panel de control de Vercel para añadir estas variables para el entorno de producción.
 
-Deployment to Vercel
-This project is optimized for Vercel. Upon pushing your code to GitHub, connect your repository to Vercel. Ensure you add the DATABASE_URL in the Environment Variables section of your Vercel project dashboard.
+Despliegue en Vercel
+Este proyecto está optimizado para Vercel. Tras subir el código a GitHub, conecta tu repositorio a Vercel. Asegúrate de añadir la variable `DATABASE_URL` en la sección de Variables de Entorno (*Environment Variables*) del panel de control de tu proyecto en Vercel. El archivo vercel.json gestiona automáticamente el enrutamiento y la configuración.
 
-The vercel.json file handles the routing and configuration automatically.
+Buenas prácticas implementadas
+Arquitectura modular: Separación de responsabilidades entre la lógica de la API y la configuración de la base de datos.
 
-Implemented Best Practices
-Modular Architecture: Separation of concerns between API logic and DB configuration.
+Seguridad: Uso de .gitignore para proteger credenciales sensibles.
 
-Security: Use of .gitignore to protect sensitive credentials.
+Estandarización: Uso estricto de módulos ES ("type": "module").
 
-Standardization: Strict use of ES Modules ("type": "module").
+Listo para la nube: Integración fluida con plataformas *serverless*.
 
-Cloud-Ready: Seamless integration with Serverless platforms.
+Licencia
+Este proyecto tiene fines educativos y forma parte del material complementario del Libro 6 (segundo módulo) de la serie didáctica *Programando Paso a Paso y Más*.
 
-License
-This project is for educational purposes and is part of the supporting material for Book 6 (Second Module) of the Programando Paso a Paso y Más instructional series.
-
-Author
+Autor
 René F. Ruano Dominguez
-
 
 
