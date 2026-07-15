@@ -3,27 +3,25 @@
  * Archivo    : db.js
  * Proyecto   : memory-task-manager
  * Descripción:
- * Módulo de conexión PostgreSQL adaptable a múltiples
- * entornos de ejecución.
+ * Módulo de conexión PostgreSQL.
  *
  * Compatible con:
- *   ✔ PostgreSQL Local
- *   ✔ Docker
- *   ✔ Vercel Postgres
- *   ✔ Neon
- *   ✔ Supabase
- *   ✔ Railway
- *   ✔ Google Cloud SQL
+ *   ✔ Desarrollo Local (PostgreSQL)
+ *   ✔ Producción (Vercel + Neon)
+ *
+ * En producción se utiliza automáticamente la variable
+ * DATABASE_URL generada por Vercel.
+ *
+ * En desarrollo se utilizan las variables definidas
+ * en el archivo .env.
  *----------------------------------------------------------
  */
 
-import pkg from "pg";
+import { Pool } from "pg";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
-
-const { Pool } = pkg;
 
 /*==========================================================
     CARGA DEL ARCHIVO .ENV (SOLO DESARROLLO)
@@ -34,37 +32,19 @@ const __dirname = path.dirname(__filename);
 
 const isProduction = process.env.NODE_ENV === "production";
 
-const envPath = path.resolve(__dirname, "../.env");
+if (!isProduction) {
 
-if (!isProduction && fs.existsSync(envPath)) {
-    dotenv.config({ path: envPath });
-    console.log("Environment : Development (.env loaded)");
+    const envPath = path.resolve(__dirname, "../.env");
+
+    if (fs.existsSync(envPath)) {
+
+        dotenv.config({ path: envPath });
+
+        console.log("Environment : Development (.env loaded)");
+
+    }
+
 }
-
-/*==========================================================
-    VARIABLES NORMALIZADAS
-==========================================================*/
-
-const DB_HOST =
-    process.env.DB_HOST ||
-    process.env.POSTGRES_HOST;
-
-const DB_PORT =
-    process.env.DB_PORT ||
-    process.env.POSTGRES_PORT ||
-    5432;
-
-const DB_NAME =
-    process.env.DB_NAME ||
-    process.env.POSTGRES_DATABASE;
-
-const DB_USER =
-    process.env.DB_USER ||
-    process.env.POSTGRES_USER;
-
-const DB_PASSWORD =
-    process.env.DB_PASSWORD ||
-    process.env.POSTGRES_PASSWORD;
 
 /*==========================================================
     DETECCIÓN DEL MÉTODO DE CONEXIÓN
@@ -72,57 +52,32 @@ const DB_PASSWORD =
 
 const hasConnectionString = Boolean(process.env.DATABASE_URL);
 
-const isCloudSql =
-    DB_HOST?.startsWith("/cloudsql/");
-
-let provider = "Local PostgreSQL";
-
-if (hasConnectionString) {
-
-    if (process.env.DATABASE_URL.includes("neon.tech"))
-        provider = "Neon";
-
-    else if (process.env.DATABASE_URL.includes("vercel-storage"))
-        provider = "Vercel Postgres";
-
-    else if (process.env.DATABASE_URL.includes("supabase"))
-        provider = "Supabase";
-
-    else if (process.env.DATABASE_URL.includes("railway"))
-        provider = "Railway";
-
-    else
-        provider = "External PostgreSQL";
-}
-else if (isCloudSql) {
-
-    provider = "Google Cloud SQL";
-
-}
+const provider = hasConnectionString
+    ? "Vercel + Neon"
+    : "Local PostgreSQL";
 
 /*==========================================================
-    VALIDACIÓN DE VARIABLES
+    VALIDACIÓN DE VARIABLES (SOLO DESARROLLO)
 ==========================================================*/
 
 function validateEnvironment() {
 
-    if (hasConnectionString)
-        return;
+    if (hasConnectionString) return;
 
-    const variables = {
-        DB_HOST,
-        DB_PORT,
-        DB_NAME,
-        DB_USER,
-        DB_PASSWORD
-    };
+    const requiredVariables = [
+        "DB_HOST",
+        "DB_PORT",
+        "DB_NAME",
+        "DB_USER",
+        "DB_PASSWORD"
+    ];
 
-    for (const [key, value] of Object.entries(variables)) {
+    for (const variable of requiredVariables) {
 
-        if (!value) {
+        if (!process.env[variable]) {
 
             throw new Error(
-                `Missing required environment variable: ${key}`
+                `Missing required environment variable: ${variable}`
             );
 
         }
@@ -159,24 +114,18 @@ function createPool() {
 
     return new Pool({
 
-        host: DB_HOST,
-        port: Number(DB_PORT),
-        database: DB_NAME,
-        user: DB_USER,
-        password: DB_PASSWORD,
+        host: process.env.DB_HOST,
+        port: Number(process.env.DB_PORT),
+
+        database: process.env.DB_NAME,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
 
         max: 20,
         idleTimeoutMillis: 30000,
         connectionTimeoutMillis: 5000,
 
-        ssl:
-            isCloudSql
-                ? false
-                : (
-                    isProduction
-                        ? { rejectUnauthorized: false }
-                        : false
-                )
+        ssl: false
 
     });
 
@@ -189,7 +138,7 @@ function createPool() {
 export const pool = createPool();
 
 /*==========================================================
-    INFORMACIÓN DEL SERVIDOR
+    INFORMACIÓN DEL MÓDULO
 ==========================================================*/
 
 console.log("\n=================================");
@@ -197,16 +146,7 @@ console.log(" POSTGRESQL CONNECTION MODULE");
 console.log("=================================");
 console.log(`Environment : ${isProduction ? "Production" : "Development"}`);
 console.log(`Provider    : ${provider}`);
-
-if (hasConnectionString)
-    console.log("Method      : DATABASE_URL");
-
-else if (isCloudSql)
-    console.log("Method      : Cloud SQL Socket");
-
-else
-    console.log("Method      : Standard TCP/IP");
-
+console.log(`Method      : ${hasConnectionString ? "DATABASE_URL" : "Standard TCP/IP"}`);
 console.log("=================================\n");
 
 /*==========================================================
@@ -221,13 +161,29 @@ export async function testConnection() {
 
         client = await pool.connect();
 
-        console.log("POSTGRESQL CONNECTION SUCCESSFUL");
+        console.log("=================================");
+        console.log(" PostgreSQL Connected");
+        console.log("=================================");
+        console.log(`Provider : ${provider}`);
+
+        if (!hasConnectionString) {
+
+            console.log(`Host     : ${process.env.DB_HOST}`);
+            console.log(`Database : ${process.env.DB_NAME}`);
+            console.log(`User     : ${process.env.DB_USER}`);
+
+        }
+
+        console.log("=================================\n");
 
     }
     catch (error) {
 
-        console.error("POSTGRESQL CONNECTION ERROR");
+        console.error("=================================");
+        console.error(" PostgreSQL Connection Error");
+        console.error("=================================");
         console.error(error.message);
+        console.error("=================================\n");
 
         throw error;
 
