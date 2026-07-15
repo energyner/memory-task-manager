@@ -114,7 +114,7 @@ else if (
 /*========================
         Server Banner
 =========================*/
-console.log();
+;
 console.log("=================================================");
 console.log("        MEMORY TASK MANAGER - REST API");
 console.log("=================================================");
@@ -139,7 +139,7 @@ console.log(
     `Static Path : ${publicPath}`
 );
 console.log("=================================================");
-console.log();
+;
 
 /*================================
             Middleware
@@ -585,29 +585,29 @@ app.use((error, req, res, next) => {
 
 if (!isVercel) {
     app.listen(PORT, () => {
-        console.log();
+       
         console.log("=================================================");
         console.log("        MEMORY TASK MANAGER - REST API");
         console.log("=================================================");
-        console.log();
+       
         console.log("Application");
         console.log("   Memory Task Manager");
-        console.log();
+       
         console.log("Environment");
         console.log(
             `   ${isProduction ? "Production" : "Development"}`
         );
 
-        console.log();
+       
         console.log("Platform");
         console.log("   Local Development");
-        console.log();
+       
         console.log("Server");
         console.log(`   http://localhost:${PORT}`);
-        console.log();
+       
         console.log("Database Provider");
         console.log(`   ${databaseProvider}`);
-        console.log();
+       
         console.log("Available Endpoints");
         console.log("--------------------------------------");
         console.log("GET      /");
@@ -621,10 +621,10 @@ if (!isVercel) {
         console.log("DELETE   /tasks/:id");
         console.log("--------------------------------------");
 
-        console.log();
+       
         console.log("Server Ready.");
         console.log("=================================================");
-        console.log();
+       
 
     });
 }
@@ -633,23 +633,23 @@ else {
     // En Vercel el despliegue se realiza como una
     // función Serverless. No existe un servidor
     // escuchando permanentemente en un puerto.
-    console.log();
+   
     console.log("=================================================");
     console.log(" MEMORY TASK MANAGER - VERCEL DEPLOYMENT");
     console.log("=================================================");
-    console.log();
+   
     console.log("Environment");
     console.log("   Production");
-    console.log();
+   
     console.log("Platform");
     console.log("   Vercel");
-    console.log();
+    
     console.log("Database Provider");
     console.log(`   ${databaseProvider}`);
-    console.log();
+    
     console.log("Application exported successfully.");
     console.log("=================================================");
-    console.log();
+    
 }
 /*----------------------------------------------------------
         Export Express Application
