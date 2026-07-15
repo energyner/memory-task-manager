@@ -600,14 +600,11 @@ if (!isVercel) {
 
        
         console.log("Platform");
-        console.log("   Local Development");
-       
+        console.log("   Local Development");       
         console.log("Server");
-        console.log(`   http://localhost:${PORT}`);
-       
+        console.log(`   http://localhost:${PORT}`);       
         console.log("Database Provider");
-        console.log(`   ${databaseProvider}`);
-       
+        console.log(`   ${databaseProvider}`);       
         console.log("Available Endpoints");
         console.log("--------------------------------------");
         console.log("GET      /");
@@ -637,16 +634,12 @@ else {
     console.log("=================================================");
     console.log(" MEMORY TASK MANAGER - VERCEL DEPLOYMENT");
     console.log("=================================================");
-   
     console.log("Environment");
-    console.log("   Production");
-   
+    console.log("   Production");   
     console.log("Platform");
-    console.log("   Vercel");
-    
+    console.log("   Vercel");    
     console.log("Database Provider");
-    console.log(`   ${databaseProvider}`);
-    
+    console.log(`   ${databaseProvider}`);    
     console.log("Application exported successfully.");
     console.log("=================================================");
     

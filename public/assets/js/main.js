@@ -23,43 +23,43 @@
         1 - CLIENT INITIALIZATION
 ==========================================================*/
 
-//----------------------------------------------------------
-// API Configuration
-//----------------------------------------------------------
+/*----------------------------------------------------------
+    API Configuration
+----------------------------------------------------------*/
 
 // [PISTA]
 // Utilizamos una ruta relativa para que el mismo
 // código funcione tanto en desarrollo local como
 // en Vercel sin modificar la URL de la API.
 
-const API_URL="/tasks";
+const API_URL = "/tasks";
 
-//----------------------------------------------------------
-// DOM References
-//----------------------------------------------------------
+/*----------------------------------------------------------
+    BLOCK 1 - DOM References
+----------------------------------------------------------*/
 
 // [PISTA]
 // Centralizamos todas las referencias al DOM para
 // facilitar el mantenimiento del código.
 
-const taskForm=document.getElementById("taskForm");
-const taskIdInput=document.getElementById("taskId");
-const titleInput=document.getElementById("titulo");
-const descriptionInput=document.getElementById("descripcion");
-const formTitle=document.getElementById("formTitle");
-const btnSave=document.getElementById("btnGuardar");
-const btnCancel=document.getElementById("btnCancelar");
-const taskList=document.getElementById("listaTareas");
+const taskForm = document.getElementById("taskForm");
+const taskIdInput = document.getElementById("taskId");
+const titleInput = document.getElementById("titulo");
+const descriptionInput = document.getElementById("descripcion");
+const formTitle = document.getElementById("formTitle");
+const btnSave = document.getElementById("btnGuardar");
+const btnCancel = document.getElementById("btnCancelar");
+const taskList = document.getElementById("listaTareas");
 
-//----------------------------------------------------------
-// Control Variables
-//----------------------------------------------------------
+/*----------------------------------------------------------
+    Control Variables
+----------------------------------------------------------*/
 
 // [PISTA]
 // Indica si el formulario está creando una nueva
 // tarea o modificando una existente.
 
-let isEditMode=false;
+let isEditMode = false;
 
 /*==========================================================
                 LOAD TASKS (GET)
@@ -70,73 +70,138 @@ let isEditMode=false;
 // server.js. Este módulo desconoce completamente
 // dónde se encuentra la base de datos.
 
+async function loadTasks() {
 
-async function loadTasks(){
+    try {
 
-    try{
-        taskList.innerHTML=`<p class="status-message"> Loading tasks...</p>`;
-        const response=await fetch(API_URL);
+        taskList.innerHTML =
+            `<p class="status-message">Loading tasks...</p>`;
 
-        if(!response.ok)
+        const response = await fetch(API_URL);
+
+        if (!response.ok)
             throw new Error("Unable to load tasks.");
 
-        const tasks=await response.json();
+        const tasks = await response.json();
 
-      
-        if(tasks.length===0){
-            taskList.innerHTML=`<p class="status-message"> No tasks available.</p>`;
+        //--------------------------------------------------
+        // No existen registros
+        //--------------------------------------------------
+
+        if (tasks.length === 0) {
+
+            taskList.innerHTML =
+                `<p class="status-message">No tasks available.</p>`;
+
             return;
+
         }
 
-        tasks.forEach(task=>{
+        //--------------------------------------------------
+        // Limpiar listado
+        //--------------------------------------------------
 
-            // [PISTA]
-            // Escapamos caracteres especiales antes
-            // de insertarlos dentro del HTML.
+        taskList.innerHTML = "";
 
-            const safeTitle=(task.title||"")
-                .replace(/'/g,"&apos;")
-                .replace(/\n/g," ");
+        //--------------------------------------------------
+        // Crear tarjetas
+        //--------------------------------------------------
 
-            const safeDescription=(task.description||"")
-                .replace(/'/g,"&apos;")
-                .replace(/\n/g," ");
+        tasks.forEach(task => {
 
-            const card=document.createElement("div");
-            card.className="task-card";
+            //----------------------------------------------
+            // Tarjeta principal
+            //----------------------------------------------
 
-            card.innerHTML=`
-                <div>
-                    <strong>[ID: ${task.id}] ${task.title}</strong>
-                    <p style="margin-top:5px;color:#555;">
-                        ${task.description||"No description"}
-                    </p>
-                </div>
-                <div>
-                    <button class="btn-edit"
-                        onclick="prepareEdit(
-                        ${task.id},
-                        '${safeTitle}',
-                        '${safeDescription}')">
-                        Edit
-                    </button>
-                    <button class="btn-delete"
-                        onclick="deleteTask(${task.id})">
-                        Delete
-                    </button>
-                </div>`;
+            const card = document.createElement("div");
+            card.className = "task-card";
+
+            //----------------------------------------------
+            // Información
+            //----------------------------------------------
+
+            const info = document.createElement("div");
+
+            const title = document.createElement("strong");
+            title.textContent =
+                `[ID: ${task.id}] ${task.title}`;
+
+            const description =
+                document.createElement("p");
+
+            description.style.marginTop = "5px";
+            description.style.color = "#555";
+
+            description.textContent =
+                task.description || "No description";
+
+            info.appendChild(title);
+            info.appendChild(description);
+
+            //----------------------------------------------
+            // Acciones
+            //----------------------------------------------
+
+            const actions =
+                document.createElement("div");
+
+            //----------------------------------------------
+            // Botón Edit
+            //----------------------------------------------
+
+            const btnEdit =
+                document.createElement("button");
+
+            btnEdit.className = "btn-edit";
+            btnEdit.textContent = "Edit";
+
+            btnEdit.addEventListener("click", () => {
+
+                prepareEdit(
+                    task.id,
+                    task.title,
+                    task.description || ""
+                );
+
+            });
+
+            //----------------------------------------------
+            // Botón Delete
+            //----------------------------------------------
+
+            const btnDelete =
+                document.createElement("button");
+
+            btnDelete.className = "btn-delete";
+            btnDelete.textContent = "Delete";
+
+            btnDelete.addEventListener("click", () => {
+
+                deleteTask(task.id);
+
+            });
+
+            //----------------------------------------------
+            // Construcción de la tarjeta
+            //----------------------------------------------
+
+            actions.appendChild(btnEdit);
+            actions.appendChild(btnDelete);
+
+            card.appendChild(info);
+            card.appendChild(actions);
 
             taskList.appendChild(card);
 
         });
 
     }
-    catch(error){
+    catch (error) {
 
         console.error(error);
 
-        taskList.innerHTML=
-            `<p class="status-message"> Error loading tasks.</p>`;
+        taskList.innerHTML =
+            `<p class="status-message">Error loading tasks.</p>`;
 
     }
 
@@ -155,75 +220,108 @@ async function loadTasks(){
 // tarea o actualizar una existente.
 // La variable isEditMode determina la operación.
 
-
-
-taskForm.addEventListener("submit",async(event)=>{
+taskForm.addEventListener("submit", async (event) => {
 
     event.preventDefault();
 
-    const title=titleInput.value.trim();
+    //------------------------------------------------------
+    // Validación del formulario
+    //------------------------------------------------------
 
-    if(title===""){
+    const title = titleInput.value.trim();
+
+    if (title === "") {
+
         alert("Please enter the task title.");
+
         titleInput.focus();
+
         return;
+
     }
 
-    const taskData={
+    //------------------------------------------------------
+    // Datos de la tarea
+    //------------------------------------------------------
+
+    const taskData = {
+
         title,
-        description:descriptionInput.value.trim()
+
+        description:
+            descriptionInput.value.trim()
+
     };
 
-    try{
+    //------------------------------------------------------
+    // Configuración de la solicitud
+    //------------------------------------------------------
 
-        let response;
+    const method =
+        isEditMode ? "PUT" : "POST";
 
-        if(isEditMode){
+    const url =
+        isEditMode
+            ? `${API_URL}/${taskIdInput.value}`
+            : API_URL;
 
-            // [PISTA]
-            // PUT actualiza una tarea existente.
+    try {
 
-            response=await fetch(
-                `${API_URL}/${taskIdInput.value}`,{
-                    method:"PUT",
-                    headers:{
-                        "Content-Type":"application/json"
-                    },
-                    body:JSON.stringify(taskData)
-                });
+        //--------------------------------------------------
+        // Enviar solicitud al servidor
+        //--------------------------------------------------
 
-        }else{
+        const response = await fetch(url, {
 
-            // [PISTA]
-            // POST crea una nueva tarea.
+            method,
 
-            response=await fetch(API_URL,{
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify(taskData)
-            });
+            headers: {
+
+                "Content-Type":
+                    "application/json"
+
+            },
+
+            body:
+                JSON.stringify(taskData)
+
+        });
+
+        //--------------------------------------------------
+        // Procesar respuesta
+        //--------------------------------------------------
+
+        const result =
+            await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                result.message ||
+                "Unexpected server error."
+            );
 
         }
 
-        const result=await response.json();
-
-        if(!response.ok)
-            throw new Error(result.message);
+        //--------------------------------------------------
+        // Operación exitosa
+        //--------------------------------------------------
 
         alert(result.message);
 
         resetForm();
 
-        loadTasks();
+        await loadTasks();
 
     }
-    catch(error){
+    catch (error) {
 
         console.error(error);
 
-        alert(error.message);
+        alert(
+            error.message ||
+            "Unexpected application error."
+        );
 
     }
 
@@ -233,9 +331,9 @@ taskForm.addEventListener("submit",async(event)=>{
                 END BLOCK 2
 ==========================================================*/
 
-//*==========================================================
- //       3 - DELETE / EDIT / INITIALIZATION
-//==========================================================*/
+/*==========================================================
+        3 - DELETE / EDIT / INITIALIZATION
+==========================================================*/
 
 /*----------------------------------------------------------
         DELETE TASK
@@ -249,35 +347,62 @@ taskForm.addEventListener("submit",async(event)=>{
 // Antes de enviar la solicitud se solicita
 // confirmación al usuario.
 
-async function deleteTask(id){
+async function deleteTask(id) {
 
-    const confirmed=confirm(
+    const confirmed = confirm(
         `Are you sure you want to delete task ${id}?`
     );
 
-    if(!confirmed) return;
+    if (!confirmed)
+        return;
 
-    try{
+    try {
 
-        const response=await fetch(`${API_URL}/${id}`,{
-            method:"DELETE"
+        //--------------------------------------------------
+        // Enviar solicitud DELETE
+        //--------------------------------------------------
+
+        const response = await fetch(`${API_URL}/${id}`, {
+
+            method: "DELETE"
+
         });
 
-        const result=await response.json();
+        //--------------------------------------------------
+        // Procesar respuesta
+        //--------------------------------------------------
 
-        if(!response.ok)
-            throw new Error(result.message);
+        const result = await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                result.message ||
+                "Unable to delete task."
+            );
+
+        }
+
+        //--------------------------------------------------
+        // Actualizar interfaz
+        //--------------------------------------------------
 
         alert(result.message);
 
-        loadTasks();
+        await loadTasks();
 
     }
-    catch(error){
+    catch (error) {
 
         console.error(error);
 
-        alert(error.message);
+        alert(
+
+            error.message ||
+
+            "Unexpected application error."
+
+        );
 
     }
 
@@ -291,21 +416,21 @@ async function deleteTask(id){
 // Carga la información de la tarea seleccionada
 // dentro del formulario para permitir su edición.
 
-function prepareEdit(id,title,description){
+function prepareEdit(id, title, description) {
 
-    isEditMode=true;
+    isEditMode = true;
 
-    formTitle.textContent="Edit Task";
+    formTitle.textContent = "Edit Task";
 
-    btnSave.textContent="Update Task";
+    btnSave.textContent = "Update Task";
 
-    btnCancel.style.display="inline-block";
+    btnCancel.style.display = "inline-block";
 
-    taskIdInput.value=id;
+    taskIdInput.value = id;
 
-    titleInput.value=title;
+    titleInput.value = title;
 
-    descriptionInput.value=description;
+    descriptionInput.value = description;
 
 }
 
@@ -317,19 +442,19 @@ function prepareEdit(id,title,description){
 // Restablece el formulario a su estado inicial
 // para crear una nueva tarea.
 
-function resetForm(){
+function resetForm() {
 
-    isEditMode=false;
+    isEditMode = false;
 
-    formTitle.textContent="New Task";
+    formTitle.textContent = "New Task";
 
-    btnSave.textContent="Save Task";
+    btnSave.textContent = "Save Task";
 
-    btnCancel.style.display="none";
+    btnCancel.style.display = "none";
 
     taskForm.reset();
 
-    taskIdInput.value="";
+    taskIdInput.value = "";
 
 }
 
@@ -342,7 +467,13 @@ function resetForm(){
 // formulario; no realiza ninguna operación
 // sobre la base de datos.
 
-btnCancel.addEventListener("click",resetForm);
+btnCancel.addEventListener(
+
+    "click",
+
+    resetForm
+
+);
 
 /*----------------------------------------------------------
         APPLICATION STARTUP
@@ -353,18 +484,6 @@ btnCancel.addEventListener("click",resetForm);
 // la lista de tareas al servidor.
 
 loadTasks();
-
-/*----------------------------------------------------------
-        GLOBAL FUNCTIONS
-----------------------------------------------------------*/
-
-// [PISTA]
-// Estas funciones quedan disponibles para los
-// botones creados dinámicamente mediante HTML.
-
-window.prepareEdit=prepareEdit;
-
-window.deleteTask=deleteTask;
 
 /*==========================================================
                 END BLOCK 3
